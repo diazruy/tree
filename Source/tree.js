@@ -97,7 +97,7 @@ provides: [Tree]
                         self.collapse(el);
                     }
                 }
-            });
+            }, this);
             /* Currently not in use because voiceOver makes faults
              this.element.getElements(self.options.selector).each(function(el){
              el.setProperty('role', 'presentation');
