@@ -37,7 +37,9 @@ provides: [Tree]
             selector: 'img.expand',
             listSelector: 'li',
             childSelector: 'ul',
-            textSelector: 'span'
+            textSelector: 'span',
+            expandImage: 'img/Expand.png',
+            collapseImage: 'img/Collapse.png'
         },
         
         initialize: function(element, options){
@@ -71,7 +73,7 @@ provides: [Tree]
             this.element.getElements(self.options.listSelector).each(function(el){
                 var imgex = new Element('img', {
                     'class': 'expand',
-                    'src': "img/Expand.png",
+                    'src': this.options.expandImage,
                     'alt': "ExpandCollapse",
                     'aria-label': "expand collapse " + el.getElement('span').get('text')
                 }).inject(el, 'top');
@@ -146,9 +148,9 @@ provides: [Tree]
              icon.addClass('tree');
              */
             if (this.isCollapsed(ul)) {
-                icon.src = "img/Expand.png";
+                icon.src = this.options.expandImage;
             } else {
-                icon.src = "img/Collapse.png";
+                icon.src = this.options.collapseImage;
             }
             
         },
@@ -560,7 +562,7 @@ provides: [Tree]
         expand: function(li){
             var ul = li.getElement(this.options.childSelector);
             ul.setStyle('display', 'block');
-            li.getElement(this.options.selector).src = "img/Collapse.png";
+            li.getElement(this.options.selector).src = this.options.collapseImage;
             li.getElement('span').setProperties({
                 'aria-expanded': 'true'
             });
@@ -581,7 +583,7 @@ provides: [Tree]
         collapse: function(li){
             var ul = li.getElement(this.options.childSelector);
             ul.setStyle('display', 'none');
-            li.getElement(this.options.selector).src = "img/Expand.png";
+            li.getElement(this.options.selector).src = this.options.expandImage;
             li.getElement('span').setProperties({
                 'aria-expanded': 'false'
             });
