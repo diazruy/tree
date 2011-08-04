@@ -44,10 +44,10 @@ provides: [Tree]
             this.singleton = true;
             this.setOptions(options);
             this.element = $(element);
-            this.treeitems = new Array();
+            this.treeitems = [];
             var tmp = this.element.getElements(this.options.textSelector);
             for (var i = 0; i < tmp.length; i++) {
-                this.treeitems[i] = new Array();
+                this.treeitems[i] = [];
                 this.treeitems[i][0] = tmp[i]; //item
                 this.treeitems[i][1] = true; //visible
                 this.treeitems[i][2] = true; //expandend
@@ -56,8 +56,9 @@ provides: [Tree]
             }
             var self = this;
             //IOS cant read images inside the role tree
-            if (Browser.Platform.name != "ios") 
+            if (Browser.Platform.name != "ios") {
                 this.element.setProperty('role', 'tree');
+            }
             this.element.getElements(self.options.childSelector).each(function(el){
                 el.setProperty('role', 'group');
                 var dlidiv = new Element('div', {
@@ -90,8 +91,9 @@ provides: [Tree]
                     });
                 }
                 if (self.hasChildren(el)) {
-                    if (!self.isCollapsed(el.getElement(self.options.childSelector))) 
+                    if (!self.isCollapsed(el.getElement(self.options.childSelector))) {
                         self.collapse(el);
+                    }
                 }
             });
             /* Currently not in use because voiceOver makes faults
@@ -124,27 +126,30 @@ provides: [Tree]
             var ul = el.getElement(this.options.childSelector), icon = el.getElement(this.options.selector);
             
             if (!this.hasChildren(el)) {
-                if (!this.options.animate || this.preparation) 
+                if (!this.options.animate || this.preparation) {
                     icon.set('opacity', 0);
-                else 
+                } else  {
                     icon.fade(0);
+                }
                 return;
             }
             
-            if (this.options.animate) 
+            if (this.options.animate) {
                 icon.fade(this.options.fadeOpacity);
-            else 
+            } else {
                 icon.set('opacity', this.options.fadeOpacity);
+            }
             /*
              if (this.isCollapsed(ul))
              icon.removeClass('tree');
              else
              icon.addClass('tree');
              */
-            if (this.isCollapsed(ul)) 
+            if (this.isCollapsed(ul)) {
                 icon.src = "img/Expand.png";
-            else 
+            } else {
                 icon.src = "img/Collapse.png";
+            }
             
         },
         
@@ -168,12 +173,11 @@ provides: [Tree]
             this.element.getElement(self.options.textSelector).addEvents({
                 focus: function(e){
                     if (this.singleton) {
-                        this.singleton = false
+                        this.singleton = false;
                         self.toggleSelection(self.element.getElement(self.options.textSelector), e);
                         self.toggleFocus(self.element.getElement(self.options.textSelector), e);
                     }
-                }
-.bind(this)
+                }.bind(this)
             });
             this.element.addEvents({
                 'keydown': function(e){
@@ -183,68 +187,59 @@ provides: [Tree]
                         self.getNextElement(el).focus();
                         self.toggleSelection(self.getNextElement(el), e);
                         self.toggleFocus(self.getNextElement(el), e);
-                    }
-                    else 
+                    } else {
                         if (e.key == 'up' && !e.shift && !e.control) {
                             e.stop();
                             self.getPrevElement(el).focus();
                             self.toggleSelection(self.getPrevElement(el), e);
                             self.toggleFocus(self.getPrevElement(el), e);
-                        }
-                        else 
+                        } else {
                             if (e.key == 'right' && !e.shift && !e.control) {
                                 e.stop();
                                 if (self.hasChildren(el.getParent())) {
                                     if (self.isCollapsed(el.getParent().getElement(self.options.childSelector))) {
                                         self.expand(el.getParent());
-                                    }
-                                    else {
+                                    } else {
                                         self.getNextElement(el).focus();
                                         self.toggleSelection(self.getNextElement(el), e);
                                         self.toggleFocus(self.getNextElement(el), e);
                                         
                                     }
                                 }
-                            }
-                            else 
+                            } else {
                                 if (e.key == 'left' && !e.shift && !e.control) {
                                     e.stop();
                                     if (self.hasChildren(el.getParent())) {
                                         if (!self.isCollapsed(el.getParent().getElement(self.options.childSelector))) {
                                             self.collapse(el.getParent());
-                                        }
-                                        else {
+                                        } else {
                                             self.getParentElement(el).focus();
                                             self.toggleSelection(self.getParentElement(el), e);
                                             self.toggleFocus(self.getParentElement(el), e);
                                         }
-                                    }
-                                    else {
+                                    } else {
                                         self.getParentElement(el).focus();
                                         self.toggleSelection(self.getParentElement(el), e);
                                         self.toggleFocus(self.getParentElement(el), e);
                                     }
-                                }
-                                else 
+                                } else {
                                     if (e.code == 36 && !e.shift && !e.control) {
                                         e.stop();
                                         self.getFirstElement(el).focus();
                                         self.toggleSelection(self.getFirstElement(el), e);
                                         self.toggleFocus(self.getFirstElement(el), e);
-                                    }
-                                    else 
+                                    } else {
                                         if (e.code == 35 && !e.shift && !e.control) {
                                             e.stop();
                                             self.getLastElement(el).focus();
                                             self.toggleSelection(self.getLastElement(el), e);
                                             self.toggleFocus(self.getLastElement(el), e);
-                                        }
-                                        else 
+                                        } else {
                                             if (e.key == 'up' && e.shift && !e.control) {
                                                 e.stop();
                                                 for (var i = 0; i < self.treeitems.length; i++) {
                                                     if (self.treeitems[i][1]) {
-                                                        if (self.treeitems[i][4] && i != 0) {
+                                                        if (self.treeitems[i][4] && i !== 0) {
                                                             var posi = self.getPositione(self.getPrevElement(self.treeitems[i][0]));
                                                             self.treeitems[posi][4] = true;
                                                             self.treeitems[posi][0].setProperty('aria-selected', 'true');
@@ -253,8 +248,7 @@ provides: [Tree]
                                                         }
                                                     }
                                                 }
-                                            }
-                                            else 
+                                            } else {
                                                 if (e.key == 'down' && e.shift && !e.control) {
                                                     e.stop();
                                                     for (var i = self.treeitems.length - 1; i >= 0; i--) {
@@ -270,8 +264,7 @@ provides: [Tree]
                                                             }
                                                         }
                                                     }
-                                                }
-                                                else 
+                                                } else {
                                                     if (e.code == 36 && e.shift && !e.control) {
                                                         e.stop();
                                                         for (var i = 0; i < self.treeitems.length; i++) {
@@ -284,8 +277,7 @@ provides: [Tree]
                                                                 self.treeitems[i][0].addClass('selected');
                                                             }
                                                         }
-                                                    }
-                                                    else 
+                                                    } else {
                                                         if (e.code == 34 && e.shift && !e.control) {
                                                             e.stop();
                                                             for (var i = self.treeitems.length - 1; i >= 0; i--) {
@@ -298,13 +290,11 @@ provides: [Tree]
                                                                     self.treeitems[i][0].addClass('selected');
                                                                 }
                                                             }
-                                                        }
-                                                        else 
+                                                        } else {
                                                             if (e.code == 106 && !e.shift && !e.control) {
                                                                 e.stop();
                                                                 self.expandAll();
-                                                            }
-                                                            else 
+                                                            } else {
                                                                 if (e.key == 'space' && !e.shift && e.control) {
                                                                     e.stop();
                                                                     if (el.getProperty('aria-selected') == 'true') {
@@ -319,18 +309,27 @@ provides: [Tree]
                                                                     }
                                                                     
                                                                 }
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
                     if (e.key == 'down' && !e.shift && e.control) {
                         e.stop();
                         self.getNextElement(el).focus();
                         self.toggleFocus(el, e);
-                    }
-                    else 
+                    } else {
                         if (e.key == 'up' && !e.shift && e.control) {
                             e.stop();
                             self.getPrevElement(el).focus();
                             self.toggleFocus(el, e);
-                        }
-                        else 
+                        } else {
                             if (e.key == 'right' && !e.shift && e.control) {
                                 e.stop();
                                 if (self.hasChildren(el.getParent())) {
@@ -343,8 +342,7 @@ provides: [Tree]
                                         
                                     }
                                 }
-                            }
-                            else 
+                            } else {
                                 if (e.key == 'left' && !e.shift && e.control) {
                                     e.stop();
                                     if (self.hasChildren(el.getParent())) {
@@ -356,8 +354,7 @@ provides: [Tree]
                                             self.collapse(el.getParent());
                                         }
                                     }
-                                }
-                                else 
+                                } else {
                                     if (!e.shift && !e.control) {
                                         var breaker = false;
                                         var posi = self.getPositione(el);
@@ -389,6 +386,10 @@ provides: [Tree]
                                         }
                                         
                                     }
+                                }
+                            }
+                        }
+                    }
                 }
             });
             
@@ -421,7 +422,7 @@ provides: [Tree]
         },
         
         hasChildren: function(el){
-            if (el.getElement(this.options.childSelector) != null) {
+            if (el.getElement(this.options.childSelector) !== null) {
                 return true;
             }
             else {
@@ -446,8 +447,9 @@ provides: [Tree]
                 if (element == this.treeitems[i][0]) {
                     var j = i + 1;
                     while (j < this.treeitems.length) {
-                        if (this.treeitems[j][1] == true) 
+                        if (this.treeitems[j][1] === true) {
                             return this.treeitems[j][0];
+                        }
                         
                         j++;
                     }
@@ -467,8 +469,9 @@ provides: [Tree]
                         return element;
                     }
                     while (j < this.treeitems.length) {
-                        if (this.treeitems[j][1] == true) 
+                        if (this.treeitems[j][1] === true) {
                             return this.treeitems[j][0];
+                        }
                         
                         j--;
                     }
@@ -495,37 +498,40 @@ provides: [Tree]
         
         getLastElement: function(element){
             for (var i = this.treeitems.length - 1; i >= 0; i--) {
-                if (this.treeitems[i][1] == true) 
+                if (this.treeitems[i][1] === true) {
                     return this.treeitems[i][0];
+                }
             }
             return element;
         },
         
         expandAll: function(element){
             this.element.getElements(this.options.listSelector).each(function(el){
-                if (this.hasChildren(el)) 
+                if (this.hasChildren(el)) {
                     this.expand(el);
-            }
-.bind(this));
+                }
+            }.bind(this));
         },
         
         toggle: function(element, e){
-            if (e) 
+            if (e) {
                 e.stop();
+            }
             
             var li = element.match(this.options.listSelector) ? element : element.getParent(this.options.listSelector);
             
-            if (this.isCollapsed(li.getElement(this.options.childSelector))) 
+            if (this.isCollapsed(li.getElement(this.options.childSelector))) {
                 this.expand(li);
-            else 
+            } else {
                 this.collapse(li);
-            
+            }
             return this;
         },
         
         toggleSelection: function(element, e){
-            if (e) 
+            if (e) {
                 e.stop();
+            }
             var self = this;
             self.element.getElements(self.options.textSelector).each(function(el){
                 el.setProperty('aria-selected', 'false');
@@ -541,8 +547,9 @@ provides: [Tree]
         
         
         toggleFocus: function(element, e){
-            if (e) 
+            if (e) {
                 e.stop();
+            }
             
             this.element.getElements(this.options.textSelector).each(function(el){
                 el.setProperty('tabindex', '-1');
@@ -557,15 +564,15 @@ provides: [Tree]
             li.getElement('span').setProperties({
                 'aria-expanded': 'true'
             });
-            var tmp = li.getElement(this.options.childSelector).getChildren(this.options.listSelector)
+            var tmp = li.getElement(this.options.childSelector).getChildren(this.options.listSelector);
             
             for (var i = 0; i < tmp.length; i++) {
                 this.treeitems[this.getPositione(tmp[i].getElement(this.options.textSelector))][2] = true;
             }
-            var tmp = li.getElement(this.options.childSelector).getElements(this.options.listSelector)
+            tmp = li.getElement(this.options.childSelector).getElements(this.options.listSelector);
             
             for (var i = 0; i < tmp.length; i++) {
-                if (this.treeitems[this.getPositione(tmp[i].getElement(this.options.textSelector))][2] == true) {
+                if (this.treeitems[this.getPositione(tmp[i].getElement(this.options.textSelector))][2] === true) {
                     this.treeitems[this.getPositione(tmp[i].getElement(this.options.textSelector))][1] = true;
                 }
             }
@@ -583,7 +590,7 @@ provides: [Tree]
             for (var i = posi + 1; i < tmp.length + posi; i++) {
                 this.treeitems[i][1] = false;
             }
-            var tmp = li.getElement(this.options.childSelector).getChildren(this.options.listSelector);
+            tmp = li.getElement(this.options.childSelector).getChildren(this.options.listSelector);
             
             for (var i = 0; i < tmp.length; i++) {
                 this.treeitems[this.getPositione(tmp[i].getElement(this.options.textSelector))][2] = false;
